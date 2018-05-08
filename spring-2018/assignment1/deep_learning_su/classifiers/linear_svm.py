@@ -1,6 +1,6 @@
 import numpy as np
+from random import shuffle
 from past.builtins import xrange
-
 
 def svm_loss_naive(W, X, y, reg):
   """
@@ -34,18 +34,24 @@ def svm_loss_naive(W, X, y, reg):
         continue
       margin = scores[j] - correct_class_score + 1 # note delta = 1
       if margin > 0:
-        dW[:, j] += X[i]
-        dW[:, y[i]] -= X[i]
         loss += margin
 
   # Right now the loss is a sum over all training examples, but we want it
   # to be an average instead so we divide by num_train.
   loss /= num_train
-  dW /= num_train
 
   # Add regularization to the loss.
   loss += reg * np.sum(W * W)
-  dW += reg * 2 * W
+
+  #############################################################################
+  # TODO:                                                                     #
+  # Compute the gradient of the loss function and store it dW.                #
+  # Rather that first computing the loss and then computing the derivative,   #
+  # it may be simpler to compute the derivative at the same time that the     #
+  # loss is being computed. As a result you may need to modify some of the    #
+  # code above to compute the gradient.                                       #
+  #############################################################################
+
 
   return loss, dW
 
@@ -56,24 +62,32 @@ def svm_loss_vectorized(W, X, y, reg):
 
   Inputs and outputs are the same as svm_loss_naive.
   """
-  num_train = X.shape[0]
-  scores = np.matmul(X, W)
-  rows = np.arange(len(scores))
-  correct_class_score = scores[rows, y].reshape(y.shape[0], 1)
-  mask = np.ones(scores.shape)
-  mask[rows, y] = 0
-  margin = scores - correct_class_score + mask
-  positive_margins = margin > 0
-  loss = margin[positive_margins].sum()
-  loss /= num_train
-  loss += reg * np.sum(W * W)
+  loss = 0.0
+  dW = np.zeros(W.shape) # initialize the gradient as zero
 
-  errors_count = positive_margins.sum(axis=1)
-  mask_correct_labels = np.zeros(scores.shape)
-  mask_correct_labels[rows, y] = errors_count
-  dW = np.matmul(X.T, positive_margins) - np.matmul(X.T, mask_correct_labels)
+  #############################################################################
+  # TODO:                                                                     #
+  # Implement a vectorized version of the structured SVM loss, storing the    #
+  # result in loss.                                                           #
+  #############################################################################
+  pass
+  #############################################################################
+  #                             END OF YOUR CODE                              #
+  #############################################################################
 
-  dW /= num_train
-  dW += reg * 2 * W
+
+  #############################################################################
+  # TODO:                                                                     #
+  # Implement a vectorized version of the gradient for the structured SVM     #
+  # loss, storing the result in dW.                                           #
+  #                                                                           #
+  # Hint: Instead of computing the gradient from scratch, it may be easier    #
+  # to reuse some of the intermediate values that you used to compute the     #
+  # loss.                                                                     #
+  #############################################################################
+  pass
+  #############################################################################
+  #                             END OF YOUR CODE                              #
+  #############################################################################
 
   return loss, dW
